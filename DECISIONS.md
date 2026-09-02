@@ -128,6 +128,15 @@ The corporate director carries an `identification` block with `registration_numb
 ### 20. Pagination
 `items_per_page` is 35. Companies with more officers require paging.
 
+### 21. Snapshot depends on the slice, not the schema
+The proposal originally named schema definition as the blocking prerequisite for the November snapshot. That was wrong: raw API responses can be stored without any schema at all.
+
+The actual prerequisite is the slice definition (§12.5) — there has to be a target set before anything can be captured.
+
+Revised ordering: disqualification counts → slice definition → snapshot collector → schema → full pipeline.
+
+Proposal §12 and §13 updated accordingly.
+
 ---
 
 ## Open questions
