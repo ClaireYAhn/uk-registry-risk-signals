@@ -137,6 +137,27 @@ Revised ordering: disqualification counts → slice definition → snapshot coll
 
 Proposal §12 and §13 updated accordingly.
 
+### 22. ECCTA changed the registry's role, not just its rules
+Read: Companies House, "Then and now: The impact of ECCTA"
+https://companieshouse.blog.gov.uk/2025/10/08/then-and-now-the-impact-of-the-economic-crime-and-corporate-transparency-act-on-companies-house
+
+Before the Act, filings were accepted largely on trust with limited verification. The registry now rejects names at incorporation, removes false entries proactively, and can strike off companies formed on a false basis.
+
+Reported enforcement: 100,400 companies had false or misleading information queried or removed between March 2024 and March 2025, and over 10,200 suspicious applications were rejected.
+
+One-line framing for the project background: ECCTA turned Companies House from a passive record keeper into an active gatekeeper.
+
+### 23. Verification scope has a documented gap
+Read: GOV.UK, "Companies House confirms identity verification rollout
+from 18 November 2025"
+https://www.gov.uk/government/news/companies-house-confirms-identity-verification-rollout-from-18-november-2025
+
+Verification for corporate directors, corporate members of LLPs, and officers of corporate PSCs commences later, with no timeline stated.
+
+Layered corporate structures therefore remain outside verification even after the transition period ends on 17 November 2026. Directly relevant to observations 3 and 6.
+
+Supports the argument in proposal §7.6 with a primary government source rather than inference.
+
 ---
 
 ## Open questions
