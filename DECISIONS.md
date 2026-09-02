@@ -1,0 +1,102 @@
+# Decisions & Observations
+A running log of design decisions, the reasoning behind them, and things found while exploring the data. Newest entries at the bottom.
+
+---
+
+## 2026-09-02 — Initial data exploration
+
+Manual walkthrough of a live company record on the Companies House web interface, before writing any collection code.
+
+Sample: company 06852450. Appears to be an ordinary trading company;
+useful precisely because the patterns below are routine rather than suspicious.
+
+### 1. Officers with identical appointment and resignation dates
+Some officer records show `appointed_on` equal to `resigned_on`.
+
+Hypothesis: an artefact of company formation agents, who appoint nominee officers at incorporation and replace them immediately.
+
+**Schema implication:** resigned officers must be retained in full.
+Filtering them out would erase this signal entirely.
+
+### 2. Typo variants in address strings
+Observed "Moorhurst Patrners" and "Moorhurst Partners" as the registered address of the same company, corrected via a filing.
+
+Address normalisation is therefore as necessary as name normalisation.
+Exact string matching would treat these as distinct addresses. 
+
+### 3. Corporate PSCs (relevant legal entities)
+PSCs are not always individuals. Observed two companies registered as PSCs of the sample company.
+
+The ownership graph is therefore multi-level. Reaching a natural person may require recursive traversal through intermediate entities.
+
+### 4. Clustering of change filings
+Seven separate changes (address, two directors, secretary, two PSCs) were filed between 2025-08-01 and 2025-08-04.
+
+Candidate feature: density of change events within a rolling window. 
+
+### 5. Formation agent pattern, observed directly
+Incorporated 2009-03-19. Nine days later, both initial officers - an individual and a corporate secretary - were terminated and replaced by the actual principals.
+
+Candidate feature: interval between incorporation and departure of initial officers.
+
+Candidate graph signal: frequency with which the same nominee names appear across unrelated companies.
+
+### 6. Corporate directors in historical records
+A limited company was appointed as a director in 2012.
+
+ECCTA moves to prohibit corporate directors, so this structure will survive only in historical data. Relevant to how far back the slice should reach.
+
+### 7. Inconsistent name formatting across eras
+Older filings are entirely lowercase ("director appointed nickolas garth rimes"); recent ones use title case with honorifics.
+
+The same individual appears as both "Nickolas Rimes" and "Nickolas Garth Rimes" in filings weeks apart.
+Concrete evidence of the entity resolution difficulty, visible within a single company's history.
+
+### 8. Undocumented legacy filing formats
+Pre-2013 capital records appear as unparseable strings, e.g. `Ad 19/03/09\gbp si 299@1=299\gbp ic 1/300\`
+Post-2013 equivalents are structured ("Statement of capital ... GBP 303").
+
+Supports restricting the slice to recently incorporated companies, on data quality grounds rather than convenience.
+
+### 9. Filings carry two distinct dates — most important finding
+Each filing has a submission date and an event date, and they diverge.
+
+Example: PSC notifications for events dated 2018-03-03 were not filed until 2019-03-28, a delay of roughly twelve months. The same twelve-month lag recurs for a later PSC notification.
+
+**Schema implication:** both dates must be stored as separate columns. Collapsing them would destroy the ability to measure reporting lag.
+
+Candidate feature: filing delay in days, and its distribution by event type.
+
+### 10. Accounting reference date changes
+Extended in 2014 (March to September), shortened back in 2017.
+
+ARD changes have legitimate commercial uses but also defer filing deadlines.
+
+Candidate feature: number of ARD changes, direction, and proximity to an approaching deadline.
+
+### 11. Duplicate confirmation statements
+Two confirmation statements filed ten days apart (2019-03-13 and 2019-03-22), both marked "no updates", where one per year is expected.
+
+Possibly an administrative error. Treated as a candidate indicator of filing hygiene rather than wrongdoing.
+
+### 12. Care-of addresses
+The registered office moved from a private rural address to two successive "C/O" service addresses in London.
+
+This is entirely routine. The signal is not the address itself but concentration: how many companies share it, and what became of them.
+
+Requires distinguishing legitimate professional service providers from those flagged by the registry.
+
+### 13. Movement between accounting size categories
+Filings moved from small company accounts to micro-entity accounts and later to full accounts.
+
+Micro-entity filings disclose the least. Periods of reduced disclosure are worth flagging.
+
+---
+
+## Open questions
+
+- Slice definition: which SIC codes, which incorporation window
+- History-preserving schema: confirm before any collection begins
+- Snapshot strategy around the ECCTA verification deadline (2026-11-17)
+
+
