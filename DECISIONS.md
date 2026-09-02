@@ -91,6 +91,43 @@ Filings moved from small company accounts to micro-entity accounts and later to 
 
 Micro-entity filings disclose the least. Periods of reduced disclosure are worth flagging.
 
+### 14. Company profile returns current state only
+No historical addresses or status. The `links` object provides paths to
+related endpoints — follow these rather than constructing URLs.
+
+Directly usable flags: `has_charges`, `has_insolvency_history`,
+`registered_office_is_in_dispute`, and `overdue` on both accounts and
+confirmation statement. `etag` may allow cheap change detection.
+
+### 15. Officers endpoint supplies pre-linked identities — major finding
+Each officer carries a `person_number` and a stable officer ID under `links.officer.appointments`.
+
+The same individual appearing twice in this company shares both, meaning Companies House already performs some entity resolution, and the officer appointments endpoint exposes every company that person is linked to.
+
+This is a substantial head start on the graph. It also raises a research question: how reliable is the official matching, and where does it fail?
+Do not assume completeness.
+
+### 16. Observation 5 corrected
+Filing history suggested initial officers departed nine days after incorporation. The officers endpoint shows `appointed_on` and `resigned_on` both equal to the incorporation date.
+
+The nine-day gap was filing lag, not tenure. Observations 1 and 5 describe the same phenomenon. Reinforces observation 9: event dates and submission dates must never be conflated.
+
+### 17. ECCTA verification data is already exposed
+Directors carry `identity_verification_details` with `appointment_verification_start_on`. The company secretary does not.
+
+This is the field to capture either side of the 2026-11-17 deadline.
+
+### 18. Address typo present in live data, not just history
+Two directors at the same registered office are recorded as "Moorhurst Partners Llp" and "Moorhurst Patrners Llp" concurrently.
+
+Normalisation is required before any address-based aggregation.
+
+### 19. Corporate officers link to their own company record
+The corporate director carries an `identification` block with `registration_number`, allowing traversal into that company's record.
+
+### 20. Pagination
+`items_per_page` is 35. Companies with more officers require paging.
+
 ---
 
 ## Open questions
